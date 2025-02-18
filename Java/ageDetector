@@ -1,0 +1,32 @@
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.Scanner;
+
+class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        // Get user input for birthdate
+        System.out.print("Enter your birth year (YYYY): ");
+        int year = scanner.nextInt();
+        System.out.print("Enter your birth month (1-12): ");
+        int month = scanner.nextInt();
+        System.out.print("Enter your birth day (1-31): ");
+        int day = scanner.nextInt();
+        
+        // Get current date and calculate age
+        LocalDate birthDate = LocalDate.of(year, month, day);
+        LocalDate currentDate = LocalDate.now();
+        
+        if (birthDate.isAfter(currentDate)) {
+            System.out.println("Birthdate cannot be in the future!");
+        } else {
+            Period age = Period.between(birthDate, currentDate);
+            System.out.println("You are " + age.getYears() + " years, " + 
+                               age.getMonths() + " months, and " + 
+                               age.getDays() + " days old.");
+        }
+        
+        scanner.close();
+    }
+}
