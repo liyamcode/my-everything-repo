@@ -1,26 +1,27 @@
 import java.util.Scanner;
 
-class Compare { // Fixed class name to match the filename
+class Compare {
     public static void main(String[] args) {
-        
+        // Initialize Scanner for user input
         Scanner input = new Scanner(System.in);
         String word1, word2;
-        
-        // Asks user for their first word
-        System.out.print("What is your first word: ");
+
+        // Prompt user for the first word
+        System.out.print("Enter your first word: ");
         word1 = input.nextLine();
-        // Asks user for their second word
-        System.out.print("What is your second word: ");
+
+        // Prompt user for the second word
+        System.out.print("Enter your second word: ");
         word2 = input.nextLine();
-        
-        // Will check if both words are equal
+
+        // Compare the two words (case-insensitive) and print the result
         if (word1.equalsIgnoreCase(word2)) {
-            // If words are equal it will print true
-            System.out.print("True");
+            System.out.println("True"); // Words are equal
         } else {
-            // If words are not equal it will print false
-            System.out.print("False");
+            System.out.println("False"); // Words are not equal
         }
-        input.close(); // Added to close the Scanner
+
+        // Close the Scanner to release resources
+        input.close();
     }
 }
