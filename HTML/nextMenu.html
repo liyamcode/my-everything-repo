@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Menu Switch</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: white;
+      transition: background-color 0.3s;
+    }
+
+    .menu {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .menu.active {
+      display: flex;
+    }
+
+    button {
+      padding: 15px 30px;
+      font-size: 18px;
+      background-color: #2ecc71;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background-color: #27ae60;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- First Menu -->
+  <div id="menu1" class="menu active">
+    <h1>Welcome Menu</h1>
+    <button onclick="goToMenu2()">Go to Next Menu</button>
+  </div>
+
+  <!-- Second Menu -->
+  <div id="menu2" class="menu">
+    <h1>Second Menu</h1>
+    <button onclick="goBack()">Go Back</button>
+  </div>
+
+  <script>
+    function goToMenu2() {
+      document.getElementById("menu1").classList.remove("active");
+      document.getElementById("menu2").classList.add("active");
+    }
+
+    function goBack() {
+      document.getElementById("menu2").classList.remove("active");
+      document.getElementById("menu1").classList.add("active");
+    }
+  </script>
+
+</body>
+</html>
