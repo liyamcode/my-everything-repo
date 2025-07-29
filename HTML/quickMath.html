@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Math Quiz</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f9f9f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    #question {
+      font-size: 28px;
+      margin-bottom: 15px;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 18px;
+      width: 120px;
+      text-align: center;
+    }
+
+    #result {
+      margin-top: 15px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .correct {
+      color: green;
+    }
+
+    .wrong {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Math Quiz</h1>
+  <div id="question">Loading...</div>
+  <input type="number" id="answerBox" placeholder="Your answer" />
+  <div id="result"></div>
+
+  <script>
+    let num1, num2, operator, correctAnswer;
+
+    function generateQuestion() {
+      const operators = ['+', '-', '×'];
+      num1 = Math.floor(Math.random() * 99) + 1;
+      num2 = Math.floor(Math.random() * 99) + 1;
+      operator = operators[Math.floor(Math.random() * operators.length)];
+
+      if (operator === '+') correctAnswer = num1 + num2;
+      else if (operator === '-') correctAnswer = num1 - num2;
+      else if (operator === '×') correctAnswer = num1 * num2;
+
+      document.getElementById("question").textContent = `${num1} ${operator} ${num2}`;
+      document.getElementById("answerBox").value = '';
+      document.getElementById("result").textContent = '';
+    }
+
+    document.getElementById("answerBox").addEventListener("keydown", function(event) {
+      if (event.key === "Enter") {
+        const userAnswer = parseInt(this.value);
+        const resultBox = document.getElementById("result");
+
+        if (userAnswer === correctAnswer) {
+          resultBox.textContent = "Correct!";
+          resultBox.className = "correct";
+        } else {
+          resultBox.textContent = `Wrong. The answer was ${correctAnswer}`;
+          resultBox.className = "wrong";
+        }
+
+        setTimeout(generateQuestion, 1500);
+      }
+    });
+
+    generateQuestion();
+  </script>
+
+</body>
+</html>
