@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simple Calculator</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f0f0f0;
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .calculator {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    input {
+      width: 100px;
+      padding: 10px;
+      margin: 10px;
+      font-size: 18px;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      background-color: #3498db;
+      color: white;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    #result {
+      margin-top: 15px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="calculator">
+    <input type="number" id="num1" placeholder="First number">
+    <input type="number" id="num2" placeholder="Second number"><br>
+    <button onclick="calculate('+')">+</button>
+    <button onclick="calculate('-')">−</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    function calculate(op) {
+      const n1 = parseFloat(document.getElementById("num1").value);
+      const n2 = parseFloat(document.getElementById("num2").value);
+      let result = "";
+
+      if (isNaN(n1) || isNaN(n2)) {
+        result = "Please enter valid numbers.";
+      } else {
+        result = op === "+" ? n1 + n2 : n1 - n2;
+      }
+
+      document.getElementById("result").textContent = "Result: " + result;
+    }
+  </script>
+
+</body>
+</html>
