@@ -1,95 +1,97 @@
-import turtle
+import pygame
 import random
 import math
 
-# Screen setup
-screen = turtle.Screen()
-screen.bgcolor("white")
-screen.title("Random Map Generator")
-screen.setup(width=1.0, height=1.0)  # Fullscreen
+# Init
+pygame.init()
+WIDTH, HEIGHT = 1000, 600
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Random Platformer")
 
-pen = turtle.Turtle()
-pen.hideturtle()
-pen.speed(0)
-pen.color("black")
-pen.pensize(2)
+# Colors
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (200, 50, 50)
 
-# Disable animation for instant draw
-turtle.tracer(0, 0)
+clock = pygame.time.Clock()
 
-# Get screen size
-width = screen.window_width()
-height = screen.window_height()
-bottom = -height // 2
+# Generate ground (segments)
+def generate_ground():
+    ground = []
+    x, y = 0, HEIGHT // 2
+    while x < WIDTH:
+        seg_width = random.randint(100, 200)
+        new_y = y + random.randint(-80, 80)
+        new_y = max(100, min(new_y, HEIGHT - 100))  # keep inside screen
+        ground.append(((x, y), (x + seg_width, new_y)))
+        x += seg_width
+        y = new_y
+    return ground
 
-# Obstacle drawing functions
-def segment_flat(x, y, seg_width):
-    new_x, new_y = x + seg_width, y
-    pen.goto(new_x, new_y)
-    return new_x, new_y
+ground_segments = generate_ground()
 
-def segment_ramp(x, y, seg_width):
-    new_y = y + random.randint(-height // 6, height // 6)
-    new_x = x + seg_width
-    pen.goto(new_x, new_y)
-    return new_x, new_y
+# Convert segments into polygon for floor fill
+def draw_ground():
+    points = [(0, HEIGHT)]
+    for seg in ground_segments:
+        points.append(seg[0])
+    points.append(ground_segments[-1][1])
+    points.append((WIDTH, HEIGHT))
+    pygame.draw.polygon(screen, BLACK, points)
 
-def segment_hill(x, y, seg_width):
-    radius = seg_width // 2
-    center_x = x + radius
-    center_y = y
-    for angle in range(181):
-        px = center_x - radius * math.cos(math.radians(angle))
-        py = center_y + radius * math.sin(math.radians(angle))
-        pen.goto(px, py)
-    return x + seg_width, y
+# Player
+player = pygame.Rect(100, 100, 30, 40)
+vel_y = 0
+on_ground = False
 
-def segment_boxes(x, y, seg_width):
-    box_size = min(50, seg_width // 3)
-    count = seg_width // (box_size + 5)
-    px = x
-    for _ in range(count):
-        pen.goto(px, y)
-        for _ in range(4):
-            pen.forward(box_size)
-            pen.left(90)
-        pen.right(90)
-        px += box_size + 5
-        pen.left(90)
-    return x + seg_width, y
+def get_ground_y(x):
+    # Find which segment player is over
+    for seg in ground_segments:
+        (x1, y1), (x2, y2) = seg
+        if x1 <= x <= x2:
+            t = (x - x1) / (x2 - x1)
+            return int(y1 + t * (y2 - y1))
+    return HEIGHT
 
-def segment_staircase(x, y, seg_width):
-    steps = 4
-    step_width = seg_width // steps
-    step_height = random.randint(15, 40)
-    px, py = x, y
-    for _ in range(steps):
-        pen.goto(px + step_width, py)
-        pen.goto(px + step_width, py + step_height)
-        px += step_width
-        py += step_height
-    return px, py
+# Main loop
+running = True
+while running:
+    screen.fill(WHITE)
 
-# Map generator with fill
-segment_types = [segment_flat, segment_ramp, segment_hill, segment_staircase]
+    # Draw terrain
+    draw_ground()
 
-pen.penup()
-pen.goto(-width // 2, 0)
-pen.pendown()
-pen.begin_fill()
+    # Events
+    keys = pygame.key.get_pressed()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
 
-x, y = -width // 2, 0
-while x < width // 2:
-    seg_width = random.randint(100, 250)
-    segment_func = random.choice(segment_types)
-    x, y = segment_func(x, y, seg_width)
+    # Player movement
+    if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+        player.x -= 5
+    if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+        player.x += 5
+    if (keys[pygame.K_SPACE] or keys[pygame.K_UP] or keys[pygame.K_w]) and on_ground:
+        vel_y = -15
+        on_ground = False
 
-# Close shape to bottom of screen
-pen.goto(width // 2, bottom)
-pen.goto(-width // 2, bottom)
-pen.goto(-width // 2, 0)
-pen.end_fill()
+    # Gravity
+    vel_y += 1
+    player.y += vel_y
 
-# Show instantly
-turtle.update()
-turtle.done()
+    # Ground collision
+    ground_y = get_ground_y(player.centerx)
+    if player.bottom >= ground_y:
+        player.bottom = ground_y
+        vel_y = 0
+        on_ground = True
+
+    # Draw player
+    pygame.draw.rect(screen, RED, player)
+
+    # Refresh
+    pygame.display.flip()
+    clock.tick(60)
+
+pygame.quit()
