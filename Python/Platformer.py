@@ -7,16 +7,17 @@ pygame.init()
 WIDTH, HEIGHT = 1000, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Random Platformer")
+font = pygame.font.SysFont(None, 48)  # default system font, size 48
+clock = pygame.time.Clock()
 
-# Colors
+# --- Colors ---
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (200, 50, 50)
 GREEN = (0, 200, 0)
 DARK_GREEN = (0, 150, 0)
-
-clock = pygame.time.Clock()
-font = pygame.font.SysFont("arial", 40)
+BROWN = (139, 69, 19)  # dirt color
+GREEN = (0, 200, 0)  # grass color
 
 # --- Start Screen ---
 def draw_start_screen():
@@ -64,12 +65,18 @@ def generate_ground():
 ground_segments = generate_ground()
 
 def draw_ground():
+    # Polygon for dirt underneath
     points = [(0, HEIGHT)]
     for seg in ground_segments:
         points.append(seg[0])
     points.append(ground_segments[-1][1])
     points.append((WIDTH, HEIGHT))
-    pygame.draw.polygon(screen, BLACK, points)
+    pygame.draw.polygon(screen, BROWN, points)
+
+    # Green grass line on top
+    for seg in ground_segments:
+        pygame.draw.line(screen, GREEN, seg[0], seg[1], 20)  # thickness = 20
+
 
 # --- Player ---
 player = pygame.Rect(100, 100, 30, 40)
